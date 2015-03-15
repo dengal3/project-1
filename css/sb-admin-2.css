@@ -3,9 +3,6 @@
  * Code licensed under the Apache License v2.0.
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
-* {
-font-family: "Helvetica","Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei","华文细黑","STHeiti" !important;
-}
 
 body {
     background-color: #f8f8f8;
@@ -24,7 +21,7 @@ body {
 @media(min-width:768px) {
     #page-wrapper {
         position: inherit;
-        margin: 0 0 0 0;
+        margin: 0 0 0 250px;
         padding: 0 30px;
         border-left: 1px solid #e7e7e7;
     }
