@@ -34,21 +34,26 @@
                     学校信息修改 <b class="caret"></b></a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
                     <li><a href="#school" tabindex="-1" data-toggle="tab">学校</a></li>
-                    <li><a href="#manager" tabindex="-1" data-toggle="tab">主管</a></li>
+                    <li><a href="#manager" tabindex="-1" data-toggle="tab" onclick="getAdmin2ndList()">主管</a></li>
                     <li><a href="#building" tabindex="-1" data-toggle="tab">楼栋</a></li>
-                    <li><a href="#host" tabindex="-1" data-toggle="tab">楼主</a></li>
+                    <li><a href="#host" tabindex="-1" data-toggle="tab" onclick="getAdmin3rdList()">楼主</a></li>
                 </ul>
             </li>                                    
-            <li>
-                <a href="#catagory" data-toggle="tab">
-                    类别编辑</a>
+            <li class="dropdown">
+               <a href="#" id="myTabDrop1" class="dropdown-toggle" 
+                    data-toggle="dropdown">
+                    类别编辑 <b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                    <li><a href="#cat1" tabindex="-1" data-toggle="tab" onclick="getCat1List()">一级类别</a></li>
+                    <li><a href="#cat2" tabindex="-1" data-toggle="tab">二级类别</a></li>
+                </ul>
             </li>
             <li>
-                <a href="#cargo" data-toggle="tab">
+                <a href="#product" data-toggle="tab">
                     货品信息修改</a>
             </li>
             <li>
-                <a href="#promotion" data-toggle="tab">
+                <a href="#promotion" data-toggle="tab" onclick="getPromotionList()">
                     促销信息修改</a>
             </li>
         </ul>
@@ -123,16 +128,15 @@
                         <input type="text" class="form-control" name="word" placeholder="密码"/>
                         <hr>
                         <input type="text" class="form-control" name="word" placeholder="联系方式"/>
+                        <input type="button" value="添加" onclick="createAdmin2nd(this.form);" class="btn btn-default" />
                     </div>
-                    <hr>
-                    <input type="button" value="添加" onclick="createAdmin2nd(this.form);" class="btn btn-default" />
                 </form>
             </div>
 
             <hr>
             <div class="hero-unit">
                 <table name="mainTable" id="managerTable" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
-                    <thead><tr><th>学校</th><th>主管名称</th><th>账号</th><th>联系方式</th></tr></thead>
+                    <thead><tr><th>学校</th><th>主管名称</th><th>账号</th><th>密码</th><th>联系方式</th></tr></thead>
                     <tbody>
                     </tbody>
                 </table>
@@ -163,7 +167,7 @@
         <div class="tab-pane fade" id="building">
             <div class="container">
                 <form action="" class="form-inline">
-                    <select name="schoolList" id="secondSchool" size="10" onchange="sel(this.form); checkSchool(this, 'secondBuilding');" class="selectpicker" data-live-search="true">
+                    <select name="schoolList" id="secondSchool" size="10" onchange="checkSchool(this, 'secondBuilding');" class="selectpicker" data-live-search="true">
                         <option selected = "selected" value = -1>请选择学校</option>
                     </select>
                     <input type="text" class="form-control" name="word" placeholder="楼栋"/>
@@ -185,7 +189,7 @@
                 <hr>
                 <form class="form-inline">
                     <div class="form-group">
-                        <select id="thirdSchool" name="schoolList" class="selectpicker" data-live-search="true" title="输入学校" onchange="checkSchool(this, 'thirdBuilding');">
+                        <select id="thirdSchool" name="schoolList" class="selectpicker" data-live-search="true" onchange="checkSchool(this, 'thirdBuilding');">
                             <option selected = "selected" value = -1>请选择学校</option>
                         </select>
                         <select id="thirdBuilding"  disabled="disabled" size="10" class="selectpicker" data-live-search="true"          title="选择楼栋">
@@ -196,15 +200,15 @@
                         <hr>
                         <input type="text" class="form-control" name="word" placeholder="密码"/>
                         <input type="text" class="form-control" name="word" placeholder="联系方式"/>
-                        <input type="button" value="查询" onclick='addToBuildingTable("thirdSchool", "hostTable");' class="btn btn-default" />
-                        <input type="button" value="添加" onclick="createHost(this.form);" class="btn btn-default" />
+                        <input type="button" value="查询" onclick='refreshAdmin3rdTable("thirdSchool", "hostTable");' class="btn btn-default" />
+                        <input type="button" value="添加" onclick="createAdmin3rd(this.form);" class="btn btn-default" />
                     </div>
                 </form>
             </div>
 
             <div class="hero-unit">
                 <table name="mainTable" id="hostTable" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
-                    <thead><tr><th>学校</th><th>楼层</th><th>楼管</th><th>用户名</th><th>联系方式</th></tr></thead>
+                    <thead><tr><th>学校</th><th>楼层</th><th>楼管</th><th>用户名</th><th>密码</th><th>联系方式</th></tr></thead>
                     <tbody>
                     </tbody>
                 </table>
@@ -212,24 +216,51 @@
         </div>
         <hr>
 
-        <div class="tab-pane fade" id="catagory">
+        <div class="tab-pane fade" id="cat1">
             <div class="container">
                 <form name="catagory" method="post" action="" class="form-inline" role="form">
 　　                <div class="form-group">
                         <input type="text" class="form-control" name="word" 
-                        placeholder="类别" />
+                        placeholder="一级类别" />
+                    </div>
+　　                <input type="button" value="增加" onclick="createCat1(this.form);" class="btn btn-default" />
+　　            </form>
+            </div>
+            <div class="hero-unit">
+                <table name="mainTable" id="cat1Table" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
+                    <thead><tr><th>学校</th></tr></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="cat2">
+            <div class="container">
+                <form name="catagory" method="post" action="" class="form-inline" role="form">
+　　                <div class="form-group">
+                        <select name="catlList" class="selectpicker" data-live-search="true">
+                            <option selected = "selected" value = -1>请选择类别</option>
+                        </select>
                         <input type="text" class="form-control" name="word" 
                         placeholder="二级类别" />
                     </div>
 　　                <input type="button" value="增加" onclick="add(this.form);" class="btn btn-default" />
 　　            </form>
             </div>
+            <div class="hero-unit">
+                <table name="mainTable" id="cat2Table" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
+                    <thead><tr><th>学校</th></tr></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="tab-pane fade" id="cargo">
+        <div class="tab-pane fade" id="product">
             <div class="container">
                 <form action="" class="form-inline">
-                    <select id= "cargoSelect" size="10" onchange="sel(this.form);checkCat('secondCat');" class="selectpicker" data-live-search="true">
+                    <select id= "cargoSelect" size="10" onchange="checkCat('secondCat');" class="selectpicker" data-live-search="true">
                         <option selected = "selected" value = -1>请选择类别</option>
                         <option>交通</option>
                         <option>娱乐</option>
