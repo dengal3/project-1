@@ -125,39 +125,15 @@
                         <input type="text" class="form-control" name="word" placeholder="联系方式"/>
                     </div>
                     <hr>
-                    <input type="button" value="添加" onclick="addToTable(this.form);" class="btn btn-default" />
+                    <input type="button" value="添加" onclick="createAdmin2nd(this.form);" class="btn btn-default" />
                 </form>
             </div>
 
             <hr>
             <div class="hero-unit">
-                <table name="mainTable" id="manageTable" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
-                    <thead><tr><th>学校</th><th>主管名称</th><th>账号</th><th>密码</th><th>联系方式</th></tr></thead>
+                <table name="mainTable" id="managerTable" class="table table-striped" style="width: 80%; margin: 50px 0 0 10%">
+                    <thead><tr><th>学校</th><th>主管名称</th><th>账号</th><th>联系方式</th></tr></thead>
                     <tbody>
-                        <tr><td>中山大学</td><td>戴旋</td><td>2222</td><td>123</td><td>0</td><td>
-                        <input type="button" value="确认" class="btn btn-default" />
-                        <input type="button" value="删除" class="btn btn-default" onclick="deleteRow(this)" />
-                        <input type="button" value="撤销" class="btn btn-default" /></td></tr>
-                        <tr><td>暨南大学</td><td>凳子</td><td>240</td><td>1123</td><td>0</td><td>
-                        <input type="button" value="确认" class="btn btn-default" />
-                        <input type="button" value="删除" class="btn btn-default" onclick="deleteRow(this)" />
-                        <input type="button" value="撤销" class="btn btn-default" /></td></tr>
-                        <tr><td>华南理工大学</td><td>板子</td><td>540</td><td>31231</td><td>0</td><td>
-                        <input type="button" value="确认" class="btn btn-default" />
-                        <input type="button" value="删除" class="btn btn-default" onclick="deleteRow(this)" />
-                        <input type="button" value="撤销" class="btn btn-default" /></td></tr>
-                        <tr><td>广州大学</td><td>桌子</td><td>200</td><td>123132</td><td>0</td><td>
-                        <input type="button" value="确认" class="btn btn-default" />
-                        <input type="button" value="删除" class="btn btn-default" onclick="deleteRow(this)" />
-                        <input type="button" value="撤销" class="btn btn-default" /></td></tr>
-                        <tr><td>广州工业大学</td><td>椅子</td><td>240</td><td>123</td><td>0</td><td>
-                        <input type="button" value="确认" class="btn btn-default" />
-                        <input type="button" value="删除" class="btn btn-default" onclick="deleteRow(this)" />
-                        <input type="button" value="撤销" class="btn btn-default" /></td></tr>
-                        <tr><td>广东外语外贸大学</td><td>宅男</td><td>240</td><td>1512</td><td>0</td><td>
-                        <input type="button" value="确认" class="btn btn-default" />
-                        <input type="button" value="删除" class="btn btn-default" onclick="deleteRow(this)" />
-                        <input type="button" value="撤销" class="btn btn-default" /></td></tr>
                     </tbody>
                 </table>
             </div>

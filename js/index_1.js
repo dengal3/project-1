@@ -29,10 +29,10 @@ function addToSchoolTable(id, name) {
 	$("#schoolTable").find('tbody').append('<tr><td id="'+ id + '">' + name
 									   +'</td><td><input type="button" value="确认" class="btn btn-default" onclick="modifySchool(this)"/> \n'
 									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteSchool(this)"/> \n'
-									   +'<input type="button" value="取消" class="btn btn-default" /></td></tr>');
+									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetSchool()"/></td></tr>');
 }
 
-function getSchoolList() {
+function getSchoolList(cancel) {
 	/*var request = createRequest();
 	if (request == null) {
     	alert("Unable to create request");
@@ -51,7 +51,9 @@ function getSchoolList() {
 	    			case 0:
 	    				var data = output.data;
 	    				for (var i = 0; i < data.length; ++i) {
-	    					addToSchoolList(data[i].id, data[i].name);
+	    					if (!cancel) {
+	    						addToSchoolList(data[i].id, data[i].name);
+	    					}
 	    					addToSchoolTable(data[i].id, data[i].name);
 	    				}
 	    				break;
@@ -206,7 +208,8 @@ function deleteSchool(t) {
 
 function addToBuildingList(school, buildingList, newId, newName) {
 	if (newId == null) {
-		var output = getBuildingList(school);
+		schoolId = $("#" + school).find('option:selected').attr('id');
+		var output = getBuildingList(schoolId);
 		var data = output.data;
 		for (var i = 0; i < data.length; ++i) {
 	    	$("#" + buildingList).append('<option id="' + data[i].id + '">' + data[i].name + '</option>');  //$ important!!!  因为append是jquery的
@@ -218,21 +221,32 @@ function addToBuildingList(school, buildingList, newId, newName) {
 }
 
 function addToBuildingTable(school, buildingTable, newId, newName) {
-	var output = getBuildingList(school);
-	var data = output.data;
-	for (var i = 0; i < data.length; ++i) {
-	    $("#"+buildingTable).find('tbody').append('<tr><td id="'+ data[i].id + '">' + data[i].name
-									   +'</td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyBuilding(this)"/> \n'
-									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteBuilding(this)"/> \n'
-									   +'<input type="button" value="取消" class="btn btn-default" onclick="reset(school, buildingTable)"/></td></tr>');
+	if (newId == null) {
+		schoolId = $("#" + school).find('option:selected').attr('id');
+		var output = getBuildingList(schoolId);
+		var data = output.data;
+		for (var i = 0; i < data.length; ++i) {
+	    	$("#"+buildingTable).find('tbody').append('<tr><td id="'+ data[i].id + '">' + data[i].name
+									   		+'</td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyBuilding(this)"/> \n'
+									   		+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteBuilding(this)"/> \n'
+									   		+'<input type="button" value="取消" class="btn btn-default" onclick="resetBuilding(\'' + school + '\'' + ', ' + '\'' + buildingTable + '\')"/></td></tr>');
+		}BB
+	} else {
+		$("#"+buildingTable).find('tbody').append('<tr><td id="'+ newId + '">' + newName
+									   	+'</td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyBuilding(this)"/> \n'
+									   	+'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteBuilding(this)"/> \n'
+									   	+'<input type="button" value="取消" class="btn btn-default" onclick="resetBuilding(\'' + school + '\'' + ', ' + '\'' + buildingTable + '\')"/></td></tr>');
 	}
 }
 
-function reset(school, tableId) {
-	alert(school);
-	alert(tableId);
+function resetBuilding(school, tableId) {
 	clearTable(tableId);
-	addToBuildingList(school, tableId);
+	addToBuildingTable(school, tableId);
+}
+
+function resetSchool() {
+	clearTable('schoolTable');
+	getSchoolList(1);
 }
 
 function clearTable(tableId) {
@@ -286,7 +300,14 @@ function modifyBuilding(t) {
   	request.send(sendData); */
 }
 
+function refreshBuildingTable(school, buildingTableId) {
+	clearTable(buildingTableId);
+	alert("ok");
+	addToBuildingTable(school, buildingTableId);
+}
+
 function createBuilding(schoolId, f) {
+
 	/*var request = createRequest();
 	if (request == null) {
     	alert("Unable to create request");
@@ -304,7 +325,7 @@ function createBuilding(schoolId, f) {
 	    		switch (code) {
 	    			case 0:
 	    				var data = output.data;
-	    				addToBuildingTable(data[0].id, data[0].name);
+	    				addToBuildingTable('secondSchool','buildingTable',data[0].id, data[0].name);
 	    				break;
 	    			case 1:
 	    			 	alert("Invalid arguments");
@@ -369,7 +390,7 @@ function deleteBuilding(t) {
   	request.send(sendData);  */
 }
 
-function getBuildingList(school) {
+function getBuildingList(school) { 
 	var responseText = '{"code":0, "data":[{"id":"zhi", "name":"至善园1号"}, {"id":"ming", "name":"明德园7号"}]}';
 	var output = JSON.parse(responseText);
 	var code = output.code;
@@ -395,88 +416,183 @@ function getBuildingList(school) {
 	}
 }
 
-function modfool(f) {
-	var request = createRequest();
-	var sendData;
+function getAdmin2ndList() {
+	/*var request = createRequest();
 	if (request == null) {
     	alert("Unable to create request");
     	return;
   	}
-  	//request.open("GET", url?x, true); 
+  	token = window.sessionStorage.getItem(token);
+	sendData = "_csrf_token=" + token;
   	request.onreadystatechange = function() {
   		if (request.readyState == 4) {
 	    	if (request.status == 200) {
-	    		//if back-end return true, refresh
-	    		//else alert("操作失败");
+	    		var requestText = request.responseText;  */
+	    		var responseText = '{"code":0, "data":[{"id":"sun", "name":"戴旋", "username":"gaxpy", "contact_info":"133333333", "school_info":{"id":"zzzz", "name":"广外"}}]}';
+	    		var output = JSON.parse(responseText);
+	    		var code = output.code;
+	    		switch (code) {
+	    			case 0:
+	    				var data = output.data;
+	    				for (var i = 0; i < data.length; ++i) {
+	    					addToAdmin2ndTable(data[i].id, data[i].name, data[i].username, data[i].contact_info, data[i].school_info.id, data[i].school_info.name);
+	    				}
+	    				break;
+	    			case 1:
+	    			 	alert("Invalid arguments");
+	    			 	break;
+	    			case 2:
+ 						alert("Csrf token check failed");
+ 						break;
+					case -2:
+						alert("Admin didn't login.");
+						break; // 未登录
+					case -10:
+						alert("Act beyond authority."); // 非一级管理员
+						break;
 	    	}
-	    }
-  	};
+	    //}
+  	//};
+  	//url = "/admin/level1/total_sales";
+  	//request.open("POST", url, true);
+  	//request.send(sendData);
 }
 
-function modfool(f) {
-	var request = createRequest();
-	var sendData;
+function addToAdmin2ndTable(id, name, username, contact_info, schoolId, schoolName) {
+	$("#managerTable").find('tbody').append('<tr><td id="'+ schoolId + '">' + schoolName + '</td><td>' + name + '</td><td id="'+ id + '">' + username + '</td><td>' + contact_info
+									   +'</td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyAdmin2nd(this)"/> \n'
+									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteAdmin2nd(this)"/> \n'
+									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetAdmin2nd()"/></td></tr>');
+}
+
+function createAdmin2nd(f) {
+	/*var request = createRequest();
 	if (request == null) {
     	alert("Unable to create request");
     	return;
   	}
-  	//request.open("GET", url?x, true); 
-  	request.onreadystatechange = function() {
+  	var token = window.sessionStorage.getItem(token);
+	var sendData = "_csrf_token=" + token;
+	request.onreadystatechange = function() {
   		if (request.readyState == 4) {
-	    	if (request.status == 200) {
-	    		//if back-end return true, refresh
-	    		//else alert("操作失败");
-	    	}
-	    }
+	    	if (request.status == 200) {  */
+	    		var responseText = '{"code":0, "data":[{"id":"su", "username":"gadpy", "school_info":{"id":"zzzz", "name":"广66"}}]}';
+	    		var output = JSON.parse(responseText);
+	    		var code = output.code;
+	    		var contact_info = f.word[3].value;
+	    		var name = f.word[0].value;
+	    		switch (code) {
+	    			case 0:
+	    				var data = output.data;
+	    				addToAdmin2ndTable(data[0].id, name, data[0].username, contact_info, data[0].school_info.id, data[0].school_info.name);
+	    				break;
+	    			case 1:
+	    			 	alert("Invalid arguments");
+	    			 	break;
+	    			case 2:
+ 						alert("Csrf token check failed");
+ 						break;
+					case -2:
+						alert("Admin didn't login.");
+						break; // 未登录
+					case -10:
+						alert("Act beyond authority."); // 非一级管理员
+						break;
+					case -15:
+						alert("School already exists.");
+						break;
+	    		}
+	    	/*}
+		}
   	};
+  	url = "/admin//level1/school/create?name=" + f.word.value;
+  	request.open("POST", url, true);
+  	request.send(sendData); */
 }
 
-function modfool(f) {
-	var request = createRequest();
-	var sendData;
+
+function modifyAdmin2nd(t) {
+    /*var request = createRequest();
 	if (request == null) {
     	alert("Unable to create request");
     	return;
   	}
-  	//request.open("GET", url?x, true); 
+  	var token = window.sessionStorage.getItem(token);
+	var sendData = "_csrf_token=" + token; */
+  	var temp = $(t).parent().siblings();
+  	Admin2nd_id = $(temp[0]).attr("id");
+  	name = $(temp[0]).text();
+    /*url="/admin//level1/school/modify?school_id=" + school_id + "name="+name;
   	request.onreadystatechange = function() {
   		if (request.readyState == 4) {
 	    	if (request.status == 200) {
-	    		//if back-end return true, refresh
-	    		//else alert("操作失败");
+	    		var output = JSON.parse(responseText);
+	    		var code = output.code;
+	    		switch (code) {
+	    			case 0:
+	    				break;
+	    			case 1:
+	    			 	alert("Invalid arguments");
+	    			 	break;
+	    			case 2:
+ 						alert("Csrf token check failed");
+ 						break;
+					case -2:
+						alert("Admin didn't login.");
+						break; // 未登录
+					case -10:
+						alert("Act beyond authority."); // 非一级管理员
+						break;
+					case -14:
+						alert("School does not exist.");
+					case -15:
+						alert("School already exists.");
+	    		} 
 	    	}
 	    }
   	};
+  	request.open("POST", url, true);
+  	request.send(sendData); */
 }
 
-function modfool(f) {
-	var request = createRequest();
-	var sendData;
+function deleteAdmin2nd(t) {
+	/*var request = createRequest();
 	if (request == null) {
     	alert("Unable to create request");
     	return;
   	}
-  	//request.open("GET", url?x, true); 
+  	var token = window.sessionStorage.getItem(token);
+	var sendData = "_csrf_token=" + token;  */
+  	var temp = $(t).parent().siblings();
+  	school_id = $(temp[0]).attr("id");
+  	/*url="/admin/level1/school/delete?school_id="+school_id;
   	request.onreadystatechange = function() {
   		if (request.readyState == 4) {
 	    	if (request.status == 200) {
-	    		//if back-end return true, refresh
-	    		//else alert("操作失败");
+	    		var responseText = request.responseText;
+	    		var output = JSON.parse(responseText);
+	    		var code = output.code;
+	    		switch (code) {
+	    			case 0:
+	    				break;
+	    			case 1:
+	    			 	alert("Invalid arguments");
+	    			 	break;
+	    			case 2:
+ 						alert("Csrf token check failed");
+ 						break;
+					case -2:
+						alert("Admin didn't login.");
+						break; // 未登录
+					case -10:
+						alert("Act beyond authority."); // 非一级管理员
+						break;
+	    		}
 	    	}
 	    }
   	};
-}
-
-function sel(f) {  //根据学校选择楼栋
-	$(f.buildingSelect).append($('<option>', {
-                        value: 0,
-                        text: "test"
-                    }));
-	$('.selectpicker').selectpicker('refresh');
-}
-
-
-function del(f) { // 删除
+  	request.open("POST", url, true);
+  	request.send(sendData);  */
 }
 
 function checkSchool(school, buildingId) {
@@ -550,7 +666,8 @@ function deleteRow(t) {
 // initialize the page
 function initPage() {
     pluginsOn();
-	getSchoolList();
+	getSchoolList(0);
+	getAdmin2ndList();
 	var length = $("table[name='mainTable']").length;  
   	for (var i = 0; i < length; ++i) {
     	$("table[name='mainTable']").editableTableWidget().numericInputExample().find('td:first').focus();
