@@ -911,6 +911,7 @@ function getCat1List() {
 	    				var password_ = "";
 	    				for (var i = 0; i < data.length; ++i) {
 	    					addToCat1Table(data[i].id, data[i].name);
+	    					addToCat1List(data[i].id, data[i].name);
 	    				}
 	    				break;
 	    			case 1:
@@ -940,6 +941,11 @@ function addToCat1Table(id, name) {
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetCat1()"/></td></tr>');
 }
 
+function addToCat1List(id, name) {
+	$("#cat1List").append('<option id="' + id + '">' + name + '</option>');  //$ important!!!  因为append是jquery的
+	$('.selectpicker').selectpicker('refresh');
+}
+
 function createCat1(f) {
 	/*var request = createRequest();
 	if (request == null) {
@@ -959,6 +965,7 @@ function createCat1(f) {
 	    			case 0:
 	    				var data = output.data;
 	    				addToCat1Table(data[0].id, name);
+	    				addToCat1List(data[0].id, name);
 	    				break;
 	    			case 1:
 	    			 	alert("Invalid arguments");
@@ -1054,7 +1061,7 @@ function getCat2List(cat1_id) {
 	    				var data = output.data;
 	    				var password_ = "";
 	    				for (var i = 0; i < data.length; ++i) {
-	    					addToCat1Table(data[i].id, data[i].name);
+	    					addToCat2Table(data[i].id, data[i].name);
 	    				}
 	    				break;
 	    			case 1:
@@ -1072,13 +1079,19 @@ function getCat2List(cat1_id) {
 	    	}
 	    //}
   	//};
-  	//url = "/admin/level1/cat1/get_list";
+  	//url = "/admin/level1/cat2/get_list";
   	//request.open("POST", url, true);
   	//request.send(sendData);
 }
 
+function refreshCat2Table(cat1, cat2TableId) {
+	clearTable(cat2TableId);
+	getCat2List(cat1);
+}
+
+
 function addToCat2Table(id, name) {
-	$("#cat1Table").find('tbody').append('<tr><td id="'+ id + '">' + name
+	$("#cat2Table").find('tbody').append('<tr><td id="'+ id + '">' + name
 									   +'</td><td><input type="button" value="确认" class="btn btn-default" onclick="modifyCat1(this)"/> \n'
 									   +'<input type="button" value="删除" class="btn btn-default"  onclick="deleteRow(this); deleteCat1(this)"/> \n'
 									   +'<input type="button" value="取消" class="btn btn-default" onclick="resetCat1()"/></td></tr>');
@@ -1102,7 +1115,7 @@ function createCat2(f) {
 	    		switch (code) {
 	    			case 0:
 	    				var data = output.data;
-	    				addToCat1Table(data[0].id, name);
+	    				addToCat2Table(data[0].id, name);
 	    				break;
 	    			case 1:
 	    			 	alert("Invalid arguments");
@@ -1129,7 +1142,7 @@ function createCat2(f) {
 	    	/*}
 		}
   	};
-  	url = "/admin/level1/cat1/create?name=" + name;
+  	url = "/admin/level1/cat2/create?name=" + name;
   	if (school_id != null) {
 	url = url + "school_id=" +school_id;
   	}
@@ -1148,7 +1161,7 @@ function deleteCat2(t) {
 	var sendData = "_csrf_token=" + token;  */
   	var temp = $(t).parent().siblings();
   	cat2_id = $(temp[0]).attr("id");
-  	/*url="/admin/level1/cat1/delete?admin_id=" + admin_id;
+  	/*url="/admin/level1/cat2/delete?admin_id=" + admin_id;
   	request.onreadystatechange = function() {
   		if (request.readyState == 4) {
 	    	if (request.status == 200) {
@@ -1234,6 +1247,9 @@ function deleteRow(t) {
 function initPage() {
     pluginsOn();
 	getSchoolList(0);
+	getCat1List();
+	getAdmin2ndList();
+	getCat1List();
 	var length = $("table[name='mainTable']").length;  
   	for (var i = 0; i < length; ++i) {
     	$("table[name='mainTable']").editableTableWidget().numericInputExample().find('td:first').focus();
