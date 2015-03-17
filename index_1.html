@@ -34,9 +34,9 @@
                     学校信息修改 <b class="caret"></b></a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
                     <li><a href="#school" tabindex="-1" data-toggle="tab">学校</a></li>
-                    <li><a href="#manager" tabindex="-1" data-toggle="tab" onclick="getAdmin2ndList()">主管</a></li>
+                    <li><a href="#manager" tabindex="-1" data-toggle="tab">主管</a></li>
                     <li><a href="#building" tabindex="-1" data-toggle="tab">楼栋</a></li>
-                    <li><a href="#host" tabindex="-1" data-toggle="tab" onclick="getAdmin3rdList()">楼主</a></li>
+                    <li><a href="#host" tabindex="-1" data-toggle="tab" onclick="clearTable('hostTable');getAdmin3rdList()">楼主</a></li>
                 </ul>
             </li>                                    
             <li class="dropdown">
@@ -44,7 +44,7 @@
                     data-toggle="dropdown">
                     类别编辑 <b class="caret"></b></a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
-                    <li><a href="#cat1" tabindex="-1" data-toggle="tab" onclick="getCat1List()">一级类别</a></li>
+                    <li><a href="#cat1" tabindex="-1" data-toggle="tab">一级类别</a></li>
                     <li><a href="#cat2" tabindex="-1" data-toggle="tab">二级类别</a></li>
                 </ul>
             </li>
@@ -218,7 +218,7 @@
 
         <div class="tab-pane fade" id="cat1">
             <div class="container">
-                <form name="catagory" method="post" action="" class="form-inline" role="form">
+                <form name="cat1" method="post" action="" class="form-inline" role="form">
 　　                <div class="form-group">
                         <input type="text" class="form-control" name="word" 
                         placeholder="一级类别" />
@@ -237,15 +237,16 @@
 
         <div class="tab-pane fade" id="cat2">
             <div class="container">
-                <form name="catagory" method="post" action="" class="form-inline" role="form">
+                <form name="cat2" method="post" action="" class="form-inline" role="form">
 　　                <div class="form-group">
-                        <select name="catlList" class="selectpicker" data-live-search="true">
+                        <select id="cat1List" class="selectpicker" data-live-search="true">
                             <option selected = "selected" value = -1>请选择类别</option>
                         </select>
                         <input type="text" class="form-control" name="word" 
                         placeholder="二级类别" />
+                        <input type="button" value="查询" onclick='refreshCat2Table("cat1List", "cat2Table");' class="btn btn-default" />
+　　                    <input type="button" value="增加" onclick="createCat2(this.form);" class="btn btn-default" />
                     </div>
-　　                <input type="button" value="增加" onclick="add(this.form);" class="btn btn-default" />
 　　            </form>
             </div>
             <div class="hero-unit">
