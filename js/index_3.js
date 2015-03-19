@@ -5,8 +5,9 @@ function initPage() {
 
 	// bootstrap plugins initilization
     pluginsOn();
-    refreshPerMin();
-    //showTable(); //testing
+    //displayOnMode();  //display page on PC mode or mobile mode
+    //refreshPerMin();
+    showTable(); //testing
     logout();  //enable the logout ajax
 }
 
@@ -54,6 +55,27 @@ function pluginsOn() {
     });
 }
 
+//display page on different modes with PC or mobile
+function displayOnMode() {
+	//create a request
+	request = createRequest();
+	url = "/admin";   //set the url to get whether the client is using PC or mobile
+
+	if (request == null) {
+    	alert("Unable to create request");
+    	return;
+  	}
+
+  	request.onreadystatechange = function() {
+  		if (request.responseText == "Mobile") {
+  			document.getElementById("not-seen-on-phone").style.visibility = "hidden";
+  		}
+  	};
+  	//open the url
+  	request.open("GET", url, true);
+  	request.send(null);
+}
+
 //refresh the page per minute
 function refreshPerMin() {
 	refresh();
@@ -65,7 +87,7 @@ function refresh() {
 	//create a request
 	request = createRequest();
 	url = "/admin/levels/query?get_order_list=1&get_inventory_list=1";   //set the url to get all orders 
-	token = window.sessionStorage.getItem("token");
+	token = window.sessionStorage.getItem(token);
 	sendData = "_csrf_token=" + token;
 	
 	if (request == null) {
@@ -80,15 +102,15 @@ function refresh() {
 }
 
 function showTable() {
-	if (request.readyState == 4) {
-    	if (request.status == 200) {
+//	if (request.readyState == 4) {
+//    	if (request.status == 200) {
     		//refresh the orders and stocks tables
     		//var output = '{"code": "0","data":{"orders":[{"number": "xxx","details":[{"name": "xxx","price": "x.x","quantity": "x"}],"receiver_info":{"name": "xxx","location": "xxx","phone": "xxxxxxxxxxx",},"status": "xxx", "released_time": "12", "timedelta": "123", "timeout": "true"}],"inventory":[{"name": "xxx","description": "xxx","quantity": "x"}]}}'; 
-			var output = request.responseText
-			//var output =  '{"code":0,"data":{"orders":[{"number":"1234", "details":[{"name":"deng","price":1.1,"quantity":1}],"receiver_info":{"name":"xxx","location":"xxx","phone":"12345678"},"status":"cancelled","released_time":9999999123456789,"timedelta":2345678,"timeout":"true"},{"number":"1234", "details":[{"name":"deng","price":1.1,"quantity":1}],"receiver_info":{"name":"xxx","location":"xxx","phone":"12345678"},"status":"cancelled","released_time":9999999123456789,"timedelta":2345678,"timeout":"true"}],"inventory":[{"name":"aaa","description":"abcdefg","quantity":12}]}}'; 
+			//text = request.responseText
+			var output =  '{"code":0,"data":{"orders":[{"number":"1234", "details":[{"name":"deng","price":1.1,"quantity":1}],"receiver_info":{"name":"xxx","location":"xxx","phone":"12345678"},"status":"cancelled","released_time":9999999123456789,"timedelta":2345678,"timeout":"true"},{"number":"1234", "details":[{"name":"deng","price":1.1,"quantity":1}],"receiver_info":{"name":"xxx","location":"xxx","phone":"12345678"},"status":"cancelled","released_time":9999999123456789,"timedelta":2345678,"timeout":"true"}],"inventory":[{"name":"aaa","description":"abcdefg","quantity":12}]}}'; 
     		var outputJson = JSON.parse(output);
     		code = outputJson.code;
-    		// testing alert(code);
+    		alert(code);
     		
     		// code == 0
     		if (!code) {
@@ -108,8 +130,8 @@ function showTable() {
     			alert("invaild code here");
     		}
 
-    	}
-    }
+//    	}
+//    }
 }
 
 function clearTablesContent() {
@@ -212,7 +234,7 @@ function insertIntoDataTable(orders) {
 				var text = "";
 
 				var restTime = orders[k]["released_time"]+orders[k]["timedelta"]-Date.parse(new Date());
-				// testing alert(restTime);
+				alert(restTime);
 				text = restTime>0 ? restTime:0;
 				
 				var textNode = document.createTextNode(text);
