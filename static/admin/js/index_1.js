@@ -45,7 +45,7 @@ function getSchoolList(cancel) {
   		if (request.readyState == 4) {
 	    	if (request.status == 200) {
 	    		var requestText = request.responseText;  */
-	    		var responseText = '{"code":0, "data":[{"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}]}';
+	    		var responseText = '{"code":0, "data":[{"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}, {"id":"sun", "name":"中山大学"}, {"id":"hua", "name":"华南工"}]}';
 	    		var output = JSON.parse(responseText);
 	    		var code = output.code;
 	    		switch (code) {
@@ -1233,10 +1233,79 @@ function showSales() {
 	var year = $("#year");
 	var month = $("#month");
 	var quarter = $("#quarter");
-	var export__ =	$("#export");
+	var export_ =	$("#export");
 	var str = "";
-	if (school.value == -1)
-	str = "school=" 
+
+	if (school.value)
+		str += "school_id="+school.value;
+	if (building.value)
+		str += "&building_id="+building.value;
+	if (year.value) {
+		if (str != "") str += "&";
+		str += "year="+year.value;
+	}
+	if (quarter.value)
+		str += "&quarter="+quarter.value;
+	if (month.value)
+		str += "&month="+month.value;
+	if (export_.value == 1) {
+		if (str != "") str += "&";
+		str += "export="+1;
+	}
+
+	var url = "/admin/level1/total_sales"+str;
+	var token = window.sessionStorage.getItem(token);
+	var sendData = "_csrf_token=" + token;
+
+	var request = createRequest();
+	if (request == null) {
+    	alert("Unable to create request");
+    	return;
+  	}
+  	
+
+  	request.onreadystatechange = function() {
+  		if (request.readyState == 4) {
+	    	if (request.status == 200) {
+	    		var requestText = request.responseText;
+	    		var output = JSON.parse(responseText);
+	    		var code = output.code;
+	    		var data = output.data;
+
+	    		switch (code) {
+	    			case 0:
+	    				break;
+	    			case 1:
+	    			 	alert("Invalid arguments");
+	    			 	break;
+	    			case 2:
+ 						alert("Csrf token check failed");
+ 						break;
+					case -2:
+						alert("Admin didn't login.");
+						break; // 未登录
+					case -10:
+						alert("Act beyond authority."); // 非一级管理员
+						break;
+					case -14:
+						alert("School does not exist.");
+					case -3:
+						alert("Building does not exist.");
+					default:
+						alert("Invalid code!");
+	    		}
+
+	    		if (!isNaN(data)) {
+	    			$("#sales").append(document.createTextNode(data));
+	    		} else {
+	    			$("body").append("<iframe src='" + data + "' style='display: none;'></iframe>");
+	    		}
+	    	}
+	    }
+	};
+
+  	request.open("POST", url, true);
+  	request.send(sendData);
 }
 
 function deleteRow(t) {
