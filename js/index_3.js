@@ -85,7 +85,7 @@ function showTable() {
     		//refresh the orders and stocks tables
     		//var output = '{"code": "0","data":{"orders":[{"number": "xxx","details":[{"name": "xxx","price": "x.x","quantity": "x"}],"receiver_info":{"name": "xxx","location": "xxx","phone": "xxxxxxxxxxx",},"status": "xxx", "released_time": "12", "timedelta": "123", "timeout": "true"}],"inventory":[{"name": "xxx","description": "xxx","quantity": "x"}]}}'; 
 			var output = request.responseText
-			//var output =  '{"code":0,"data":{"orders":[{"number":"1234", "details":[{"name":"deng","price":1.1,"quantity":1}],"receiver_info":{"name":"xxx","location":"xxx","phone":"12345678"},"status":"cancelled","released_time":9999999123456789,"timedelta":2345678,"timeout":"true"},{"number":"1234", "details":[{"name":"deng","price":1.1,"quantity":1}],"receiver_info":{"name":"xxx","location":"xxx","phone":"12345678"},"status":"cancelled","released_time":9999999123456789,"timedelta":2345678,"timeout":"true"}],"inventory":[{"name":"aaa","description":"abcdefg","quantity":12}]}}'; 
+			//var output =  '{"code":0,"data":{"orders":[{"number":"1234", "details":[{"name":"deng","price":1.1,"quantity":1}],"receiver_info":{"name":"xxx","location":"xxx","phone":"12345678"},"status":"cancelled","released_time":9999999123456789,"timedelta":2345678,"timeout":"true"},{"number":"1234", "details":[{"name":"deng","price":1.1,"quantity":1}],"receiver_info":{"name":"xxx","location":"xxx","phone":"12345678"},"status":"cancelled","released_time":1426780800,"timedelta":3600,"timeout":"true"}],"inventory":[{"name":"aaa","description":"abcdefg","quantity":12}]}}'; 
     		var outputJson = JSON.parse(output);
     		code = outputJson.code;
     		// testing alert(code);
@@ -210,10 +210,10 @@ function insertIntoDataTable(orders) {
 				td.appendChild(textNode);
 			} else if (property == "timedelta") {
 				var text = "";
+				var currentTime = new Date();
+				var deadline = new Date((orders[k]["released_time"]+orders[k]["timedelta")*1000);
 
-				var restTime = orders[k]["released_time"]+orders[k]["timedelta"]-Date.parse(new Date());
-				// testing alert(restTime);
-				text = restTime>0 ? restTime:0;
+				text = restTime>0 ? [restTime.getUTCHours(), restTime.getUTCMinutes(), restTime.getUTCSeconds()].join(":") :0;
 				
 				var textNode = document.createTextNode(text);
 				td.appendChild(textNode);
@@ -341,3 +341,4 @@ function isArray(arg) {
   }
   return false;
 }
+
